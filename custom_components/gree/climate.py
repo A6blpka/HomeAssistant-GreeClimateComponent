@@ -90,8 +90,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_UID): cv.positive_int
 })
 
-@asyncio.coroutine
-def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
+async def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
     _LOGGER.info('Setting up Gree climate platform')
     name = config.get(CONF_NAME)
     ip_addr = config.get(CONF_HOST)
@@ -481,14 +480,13 @@ class GreeClimate(ClimateEntity):
         _LOGGER.info('Finished SyncState')
         return receivedJsonPayload
 
-    @asyncio.coroutine
-    def _async_temp_sensor_changed(self, entity_id, old_state, new_state):
+    async def _async_temp_sensor_changed(self, entity_id, old_state, new_state):
         _LOGGER.info('temp_sensor state changed |' + str(entity_id) + '|' + str(old_state) + '|' + str(new_state))
         # Handle temperature changes.
         if new_state is None:
             return
         self._async_update_current_temp(new_state)
-        yield from self.async_update_ha_state()
+        return self.async_update_ha_state()
         
     @callback
     def _async_update_current_temp(self, state):
@@ -512,8 +510,7 @@ class GreeClimate(ClimateEntity):
         except ValueError:
             return False     
 
-    @asyncio.coroutine
-    def _async_lights_entity_state_changed(self, entity_id, old_state, new_state):
+    async def _async_lights_entity_state_changed(self, entity_id, old_state, new_state):
         _LOGGER.info('lights_entity state changed |' + str(entity_id) + '|' + str(old_state) + '|' + str(new_state))
         if new_state is None:
             return
@@ -521,7 +518,7 @@ class GreeClimate(ClimateEntity):
             # do nothing if state change is triggered due to Sync with HVAC
             return
         self._async_update_current_lights(new_state)
-        yield from self.async_update_ha_state()
+        return self.async_update_ha_state()
 
     @callback
     def _async_update_current_lights(self, state):
@@ -534,8 +531,7 @@ class GreeClimate(ClimateEntity):
             return
         _LOGGER.error('Unable to update from lights_entity!')
 
-    @asyncio.coroutine
-    def _async_xfan_entity_state_changed(self, entity_id, old_state, new_state):
+    async def _async_xfan_entity_state_changed(self, entity_id, old_state, new_state):
         _LOGGER.info('xfan_entity state changed |' + str(entity_id) + '|' + str(old_state) + '|' + str(new_state))
         if new_state is None:
             return
@@ -547,7 +543,7 @@ class GreeClimate(ClimateEntity):
             _LOGGER.info('Cant set xfan in %s mode' % str(self._hvac_mode))
             return
         self._async_update_current_xfan(new_state)
-        yield from self.async_update_ha_state()
+        return self.async_update_ha_state()
 
     @callback
     def _async_update_current_xfan(self, state):
@@ -560,8 +556,7 @@ class GreeClimate(ClimateEntity):
             return
         _LOGGER.error('Unable to update from xfan_entity!')
 
-    @asyncio.coroutine
-    def _async_health_entity_state_changed(self, entity_id, old_state, new_state):
+    async def _async_health_entity_state_changed(self, entity_id, old_state, new_state):
         _LOGGER.info('health_entity state changed |' + str(entity_id) + '|' + str(old_state) + '|' + str(new_state))
         if new_state is None:
             return
@@ -569,7 +564,7 @@ class GreeClimate(ClimateEntity):
             # do nothing if state change is triggered due to Sync with HVAC
             return
         self._async_update_current_health(new_state)
-        yield from self.async_update_ha_state()
+        return self.async_update_ha_state()
 
     @callback
     def _async_update_current_health(self, state):
@@ -582,8 +577,7 @@ class GreeClimate(ClimateEntity):
             return
         _LOGGER.error('Unable to update from health_entity!')
 
-    @asyncio.coroutine
-    def _async_powersave_entity_state_changed(self, entity_id, old_state, new_state):
+    async def _async_powersave_entity_state_changed(self, entity_id, old_state, new_state):
         _LOGGER.info('powersave_entity state changed |' + str(entity_id) + '|' + str(old_state) + '|' + str(new_state))
         if new_state is None:
             return
@@ -595,7 +589,7 @@ class GreeClimate(ClimateEntity):
             _LOGGER.info('Cant set powersave in %s mode' % str(self._hvac_mode))
             return
         self._async_update_current_powersave(new_state)
-        yield from self.async_update_ha_state()
+        return self.async_update_ha_state()
 
     @callback
     def _async_update_current_powersave(self, state):
@@ -609,8 +603,7 @@ class GreeClimate(ClimateEntity):
         _LOGGER.error('Unable to update from powersave_entity!')
 
 
-    @asyncio.coroutine
-    def _async_sleep_entity_state_changed(self, entity_id, old_state, new_state):
+    async def _async_sleep_entity_state_changed(self, entity_id, old_state, new_state):
         _LOGGER.info('sleep_entity state changed |' + str(entity_id) + '|' + str(old_state) + '|' + str(new_state))
         if new_state is None:
             return
@@ -622,7 +615,7 @@ class GreeClimate(ClimateEntity):
             _LOGGER.info('Cant set sleep in %s mode' % str(self._hvac_mode))
             return
         self._async_update_current_sleep(new_state)
-        yield from self.async_update_ha_state()
+        return self.async_update_ha_state()
 
     @callback
     def _async_update_current_sleep(self, state):
@@ -635,8 +628,7 @@ class GreeClimate(ClimateEntity):
             return
         _LOGGER.error('Unable to update from sleep_entity!')
 
-    @asyncio.coroutine
-    def _async_eightdegheat_entity_state_changed(self, entity_id, old_state, new_state):
+    async def _async_eightdegheat_entity_state_changed(self, entity_id, old_state, new_state):
         _LOGGER.info('eightdegheat_entity state changed |' + str(entity_id) + '|' + str(old_state) + '|' + str(new_state))
         if new_state is None:
             return
@@ -648,7 +640,7 @@ class GreeClimate(ClimateEntity):
             _LOGGER.info('Cant set 8℃ heat in %s mode' % str(self._hvac_mode))
             return
         self._async_update_current_eightdegheat(new_state)
-        yield from self.async_update_ha_state()
+        return self.async_update_ha_state()
 
     @callback
     def _async_update_current_eightdegheat(self, state):
@@ -661,8 +653,7 @@ class GreeClimate(ClimateEntity):
             return
         _LOGGER.error('Unable to update from eightdegheat_entity!')
 
-    @asyncio.coroutine
-    def _async_air_entity_state_changed(self, entity_id, old_state, new_state):
+    async def _async_air_entity_state_changed(self, entity_id, old_state, new_state):
         _LOGGER.info('air_entity state changed |' + str(entity_id) + '|' + str(old_state) + '|' + str(new_state))
         if new_state is None:
             return
@@ -670,7 +661,7 @@ class GreeClimate(ClimateEntity):
             # do nothing if state change is triggered due to Sync with HVAC
             return
         self._async_update_current_air(new_state)
-        yield from self.async_update_ha_state()
+        return self.async_update_ha_state()
 
     @callback
     def _async_update_current_air(self, state):
@@ -824,8 +815,7 @@ class GreeClimate(ClimateEntity):
             self.SyncState({'Mod': self._hvac_modes.index(hvac_mode), 'Pow': 1})
         self.schedule_update_ha_state()
 
-    @asyncio.coroutine
-    def async_added_to_hass(self):
+    async def async_added_to_hass(self):
         _LOGGER.info('Gree climate device added to hass()')
         self.SyncState()
 
